@@ -7,6 +7,7 @@ import * as React from 'react';
 import GypsyAppBar from './GypsyAppBar';
 import HostelGallery from './HostelGallery';
 import SearchInventory from './SearchInventory';
+import Intro from './Intro';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
 
@@ -18,26 +19,23 @@ function App() {
           <GypsyAppBar />
         </Grid>
         <Grid xs={12}>
-          <Intro />
+          <Landing />
         </Grid>
       </Grid>
     </Box>
   );
 }
 
-function Intro() {
+function Landing() {
   return (
     <Grid container>
-      <Grid xs={12} md={8}>
-        <div className="IntroText">
-          Gypsy Nest — Backpapers haven on Budget.
-        </div>
-        <SearchInventory />
-      </Grid>
-      <Grid xs={12} md={4}>
+      <Grid xs={12} md={6}>
         <div className='ImageList'>
           <HostelGallery />
         </div>
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Intro />
       </Grid>
     </Grid>
   );

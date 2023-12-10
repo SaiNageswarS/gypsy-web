@@ -10,24 +10,21 @@ import './App.css';
 function SearchInventory() {
     return (
         <div className="SearchInventory">
-            <Grid container spacing={2}>
-                <Grid xs={12} md={4}>
+            <Grid container spacing={0}>
+                <Grid xs={6} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker label="Check-In" />
                     </LocalizationProvider>
                 </Grid>
-                <Grid xs={12} md={4}>
+                <Grid xs={6} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker label="Check-Out" />
                     </LocalizationProvider>
                 </Grid>
                 <Grid xs={12} md={4}>
-                    <TextField id="numAdults" label="Num Adults" variant="outlined" />
+                    <Button variant="contained" className='SearchButton'>Search</Button>
                 </Grid>
             </Grid>
-            <div className='SearchButton'>
-                <Button variant="contained" size='large'>Search</Button>
-            </div>
         </div>
     );
 }
