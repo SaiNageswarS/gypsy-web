@@ -2,53 +2,41 @@
   background: #ddeaf6;
 }
 
-.Header {
-  height: 108px;
-  background-color: #fff;
-  will-change: transform;
-  transition: .4s ease-in-out;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  padding-left: .75rem;
-  padding-right: .75rem;
-}
-
-.Brand {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.AppBar {
+  background: #ffffff;
 }
 
 .BrandLogo {
-  padding: 10px;
   border-radius: 4px;
+  padding-left: 10px;
 }
 
 .BrandName {
   color: #235784;
   font-weight: 800;
-  font-size: 30px;
-  padding: 10px 0 10px 0;
-}
-
-.HeaderActions {
-  display: flex;
-  flex-direction: row;
-  margin-left: auto;
-  padding-right: 5%;
-}
-
-.Intro {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  font-size: 20px;
 }
 
 .IntroText {
-  font-size: 18px;
-  color: #2c3c4a;
+  padding: 30px 10px 30px 10px;
+  font-size: 35px;
+  color: #040b11;
   line-height: 1.45;
+  font-weight: 800;
+}
+
+.ImageList {
+  padding-top: 10px;
+}
+
+.SearchInventory {
+  background: #fff;
+  border-radius: 24px;
+  padding: 30px;
+  margin: 25px;
+  text-align: center;
+}
+
+.SearchButton {
+  padding: 10px;
 }
