@@ -2,8 +2,53 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import './App.css';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useState } from 'react';
+
+const provider = new GoogleAuthProvider();
 
 function GypsyAppBar() {
+    const [user, setUser] = useState(null);
+
+    function FirebaseLogin() {
+        const auth = getAuth();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                // The signed-in user info.
+                const resUser = result.user;
+                setUser(resUser);
+                console.log("Logged in user: " + JSON.stringify(resUser));
+            }).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                // ...
+            });
+    }
+
+    function HeaderActions({ loggedInUser }) {
+        if (loggedInUser === null) {
+            return (
+                <div className="HeaderActions">
+                    <Button variant="contained" onClick={FirebaseLogin}>Login</Button>
+                </div>
+            );
+        }
+
+        return (
+            <div className="HeaderActions">
+                <img src={loggedInUser.photoURL} alt={loggedInUser.displayName} className="UserAvatar" />
+            </div>
+        );
+    }
+
     return (
         <Grid container alignItems="center" spacing={2} sx={{ minHeight: "90px" }} className="AppBar">
             <Grid xs={6} md={9}>
@@ -15,9 +60,7 @@ function GypsyAppBar() {
                 <span className="BrandName"> Gypsy Nest </span>
             </Grid>
             <Grid xs={6} md={3}>
-                <div className="HeaderActions">
-                    <Button variant="contained">Login</Button>
-                </div>
+                <HeaderActions loggedInUser={user} />
             </Grid>
         </Grid>
     );
