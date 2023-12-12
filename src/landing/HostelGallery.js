@@ -1,6 +1,7 @@
+import './Landing.css';
 import * as React from 'react';
+
 import Carousel from 'react-material-ui-carousel'
-import './App.css';
 
 function HostelGallery() {
     return (

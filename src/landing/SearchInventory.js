@@ -1,11 +1,11 @@
+import './Landing.css';
 import * as React from 'react';
+
 import Grid from '@mui/material/Unstable_Grid2';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import './App.css';
 
 function SearchInventory() {
     return (

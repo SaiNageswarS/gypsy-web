@@ -1,8 +1,10 @@
+import './App.css';
 import * as React from 'react';
+
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
-import './App.css';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+import { getAuth, signInWithRedirect, GoogleAuthProvider } from "firebase/auth";
 import { useState } from 'react';
 
 const provider = new GoogleAuthProvider();
@@ -12,7 +14,7 @@ function GypsyAppBar() {
 
     function FirebaseLogin() {
         const auth = getAuth();
-        signInWithPopup(auth, provider)
+        signInWithRedirect(auth, provider)
             .then((result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
                 const credential = GoogleAuthProvider.credentialFromResult(result);

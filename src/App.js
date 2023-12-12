@@ -1,19 +1,19 @@
 import './App.css';
+import * as React from 'react';
+
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import * as React from 'react';
-
-import GypsyAppBar from './GypsyAppBar';
-import HostelGallery from './HostelGallery';
-import Intro from './Intro';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+
+import GypsyAppBar from './GypsyAppBar';
+import Landing from './landing/Landing';
 
 function App() {
   return (
@@ -27,21 +27,6 @@ function App() {
         </Grid>
       </Grid>
     </Box>
-  );
-}
-
-function Landing() {
-  return (
-    <Grid container>
-      <Grid xs={12} md={6}>
-        <div className='ImageList'>
-          <HostelGallery />
-        </div>
-      </Grid>
-      <Grid xs={12} md={6}>
-        <Intro />
-      </Grid>
-    </Grid>
   );
 }
 
