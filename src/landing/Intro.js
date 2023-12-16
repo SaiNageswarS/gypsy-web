@@ -14,7 +14,7 @@ function Intro() {
             <Grid container>
                 <Grid xs={12} md={12}>
                     <div className='IntroText'>
-                        Gypsy Nest — Backpapers haven on Budget.
+                        Gypsy Nest — Backpackers haven on Budget.
                     </div>
                 </Grid>
 
