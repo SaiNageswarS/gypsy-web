@@ -1,0 +1,47 @@
+.Intro {
+    background: #ddeaf6;
+    margin: 20px 0 30px 0;
+    padding: 20px;
+}
+
+.IntroText {
+    font-size: 20px;
+    color: #040b11;
+    line-height: 1.45;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.IntroIcons {
+    text-align: center;
+}
+
+.SearchInventory {
+    background: #fff;
+    border-radius: 24px;
+    padding: 25px;
+    margin: 2%;
+    text-align: center;
+}
+
+.SearchButton {
+    width: 100%;
+    min-height: 50px;
+    height: 100%;
+}
+
+.SearchDatePicker {
+    width: 100%;
+}
+
+.GalleryImg {
+    width: 100%;
+    object-fit: cover;
+    height: 400px;
+}
+
+@media only screen and (max-width: 600px) {
+    .GalleryImg {
+        height: 200px;
+    }
+}
