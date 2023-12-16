@@ -1,6 +1,5 @@
 import './App.css';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 
 import { GetLoggedInUser } from './repo/LoginAndProfile';
 
@@ -16,9 +15,9 @@ import GypsyAppBar from './GypsyAppBar';
 import Landing from './landing/Landing';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = React.useState(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     GetLoggedInUser().then((user) => {
       setUser(user);
     });

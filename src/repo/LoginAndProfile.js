@@ -1,5 +1,5 @@
 import { db } from "./FirebaseApp.js";
-import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { getAuth, signOut, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 async function Login() {
@@ -7,6 +7,11 @@ async function Login() {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
     await signInWithRedirect(auth, provider);
+}
+
+async function Logout() {
+    const auth = getAuth();
+    await signOut(auth);
 }
 
 async function GetLoggedInUser() {
@@ -46,4 +51,4 @@ async function GetProfile(userId) {
     return null;
 }
 
-export { Login, GetLoggedInUser };
+export { Login, Logout, GetLoggedInUser };

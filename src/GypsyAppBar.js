@@ -1,28 +1,14 @@
 import './App.css';
 import * as React from 'react';
 
-import { Login } from './repo/LoginAndProfile';
+import { Login, Logout } from './repo/LoginAndProfile';
 
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
+import Popover from '@mui/material/Popover';
+import Link from '@mui/material/Link';
 
 function GypsyAppBar({ loggedInUser }) {
-    function HeaderActions() {
-        if (loggedInUser === null) {
-            return (
-                <div className="HeaderActions">
-                    <Button variant="contained" onClick={Login}>Login</Button>
-                </div>
-            );
-        }
-
-        return (
-            <div className="HeaderActions">
-                <img src={loggedInUser.photoURL} alt={loggedInUser.displayName} className="UserAvatar" />
-            </div>
-        );
-    }
-
     return (
         <Grid container alignItems="center" spacing={2} sx={{ minHeight: "90px" }} className="AppBar">
             <Grid xs={6} md={9}>
@@ -34,9 +20,61 @@ function GypsyAppBar({ loggedInUser }) {
                 <span className="BrandName"> Gypsy Nest </span>
             </Grid>
             <Grid xs={6} md={3}>
-                <HeaderActions/>
+                <HeaderActions loggedInUser={loggedInUser} />
             </Grid>
         </Grid>
+    );
+}
+
+function HeaderActions({ loggedInUser }) {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const openUserActionsPopUp = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const closeUserActionsPopUp = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    if (loggedInUser === null) {
+        return (
+            <div className="HeaderActions">
+                <Button variant="contained" onClick={Login}>Login</Button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="HeaderActions">
+            <img
+                src={loggedInUser.photoURL}
+                alt={loggedInUser.displayName}
+                className="UserAvatar"
+                onClick={openUserActionsPopUp}
+                aria-describedby={id} />
+
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={closeUserActionsPopUp}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}>
+                <div className='userPopover'>
+                    <Link href="#" onClick={Logout}>Logout</Link>
+                </div>
+            </Popover>
+        </div>
     );
 }
 
