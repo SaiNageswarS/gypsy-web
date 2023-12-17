@@ -1,7 +1,7 @@
 import './App.css';
 import * as React from 'react';
 
-import { Login, Logout } from './repo/LoginAndProfile';
+import { Login, Logout } from './repo/LoginAndProfileRepo';
 
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';

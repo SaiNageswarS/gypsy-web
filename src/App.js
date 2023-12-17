@@ -1,7 +1,7 @@
 import './App.css';
 import * as React from 'react';
 
-import { GetLoggedInUser } from './repo/LoginAndProfile';
+import { GetLoggedInUser } from './repo/LoginAndProfileRepo';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import '@fontsource/roboto/300.css';

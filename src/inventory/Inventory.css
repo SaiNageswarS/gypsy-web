@@ -1,0 +1,66 @@
+.InventoryBedImageContainer {
+    padding: 10px;
+}
+
+.InventoryHeaderTitle {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: #31363f;
+    margin-bottom: 1rem;
+}
+
+.InventoryHeaderSubtitle {
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #31363f;
+    margin-bottom: 1rem;
+}
+
+.InventoryBedDetails {
+    padding: 10px;
+}
+
+.InventoryBedTitle {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: #31363f;
+    margin-bottom: 1rem;
+}
+
+.InventoryBedSubtitle {
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #31363f;
+    margin-bottom: 1rem;
+}
+
+.PriceDetails {
+    position: relative;
+    width: 100%;
+    text-align: right;
+    height: 100%;
+}
+
+.InventoryPrice {
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+.InventoryPriceDescription {
+    font-weight: 400;
+    font-size: .875rem;
+    line-height: 1.25;
+    color: #31363f;
+    margin-bottom: 1rem;
+}
+
+.Inventory {
+    padding: 10px;
+}
