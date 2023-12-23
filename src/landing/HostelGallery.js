@@ -7,7 +7,7 @@ function HostelGallery() {
     return (
         <Carousel>
             {
-                items.map((item, i) => <img src={item.src} alt={item.alt} className='GalleryImg' />)
+                items.map((item, i) => <img key={i} src={item.src} alt={item.alt} className='GalleryImg' />)
             }
         </Carousel>
     );

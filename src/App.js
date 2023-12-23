@@ -15,6 +15,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import GypsyAppBar from './GypsyAppBar';
 import Landing from './landing/Landing';
 import Inventory from './inventory/Inventory';
+import Admin from './admin/Admin';
 
 function App() {
   const [user, setUser] = React.useState(null);
@@ -36,6 +37,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/inventory" element={<Inventory />} />
+              <Route path="/admin" element={<Admin loggedInUser={user} />} />
             </Routes>
           </Grid>
         </Grid>
