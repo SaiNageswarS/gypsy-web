@@ -22,3 +22,33 @@ th {
 .NewBooking {
     padding: 10px;
 }
+
+.GuestDetail {
+    width: 100%;
+}
+
+.GuestName {
+    font-weight: 800;
+    color: #31363f;
+    font-size: 1.5rem;
+}
+
+.GuestDetail img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.AmntPending {
+    font-weight: 400;
+    color: #ff7f00;
+    font-size: 1rem;
+    padding: 10px;
+}
+
+.numBeds {
+    font-weight: 400;
+    color: #31363f;
+    font-size: 1rem;
+    padding: 10px;
+}

@@ -96,7 +96,7 @@ function GuestRoom({ guestList }) {
                 {guestList.map((guest, idx) => {
                     return (
                         <tr key={idx}>
-                            <td>{guest.name}</td>
+                            <td><GuestDetail guest={guest} /></td>
                         </tr>
                     );
                 })}
@@ -104,5 +104,34 @@ function GuestRoom({ guestList }) {
         </table>
     );
 }
+
+function GuestDetail({ guest }) {
+    return (
+        <div className='GuestDetail'>
+            <Grid container spacing={0}>
+                <Grid xs={2} md={2}>
+                    <img src={bookingSrcIcon[guest.src]} alt={guest.source} />
+                </Grid>
+                <Grid xs={8} md={8}>
+                    <div className="GuestName">{guest.name}</div>
+                </Grid>
+                <Grid xs={6} md={6}>
+                    <div className='AmntPending'> INR {guest.amnt} </div>
+                </Grid>
+                <Grid xs={6} md={6}>
+                    <div className='numBeds'>Beds: {guest.numBeds}</div>
+                </Grid>
+            </Grid>
+        </div>
+    );
+}
+
+const bookingSrcIcon = {
+    'booking.com': 'https://cf.bstatic.com/static/img/favicon/9ca83ba2a5a3293ff07452cb24949a5843af4592.svg',
+    'hostelworld.com': 'https://www.hostelworld.com/favicon.ico',
+    'agoda.com': 'https://www.agoda.com/favicon.ico',
+    'goibibo/mmt': 'https://jsak.goibibo.com/pwa_v3/pwa_growth/images/favicon-96x96.2d2829e5.png',
+    'airbnb.com': 'https://a0.muscache.com/airbnb/static/logotype_favicon-21cc8e6c6a2cca43f061d2dcabdf6e58.ico',
+};
 
 export default Admin;
