@@ -16,6 +16,7 @@ import GypsyAppBar from './GypsyAppBar';
 import Landing from './landing/Landing';
 import Inventory from './inventory/Inventory';
 import Admin from './admin/Admin';
+import NewBooking from './admin/NewBooking';
 
 function App() {
   const [user, setUser] = React.useState(null);
@@ -38,6 +39,7 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/admin" element={<Admin loggedInUser={user} />} />
+              <Route path="/admin/booking/new" element={<NewBooking loggedInUser={user} />} />
             </Routes>
           </Grid>
         </Grid>

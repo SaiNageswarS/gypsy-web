@@ -2,15 +2,23 @@ import './Admin.css';
 import * as React from 'react';
 
 import { GetBookings } from '../repo/BookingRepo';
+import { useNavigate } from 'react-router-dom';
 
 import dayjs from 'dayjs';
 import Grid from '@mui/material/Unstable_Grid2';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 function Admin({ loggedInUser }) {
     const [currentDay, setCurrentDay] = React.useState(dayjs());
+    const navigate = useNavigate();
+
+    function newBooking() {
+        navigate('/admin/booking/new');
+    }
 
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
         return (
@@ -40,6 +48,11 @@ function Admin({ loggedInUser }) {
                     </Grid>
                 </Grid>
                 <Booking bookingDate={currentDay} />
+                <div style={{ position: 'fixed', bottom: '62px', right: '52px', zIndex: 1000 }}>
+                    <Fab color="primary" aria-label="add" onClick={newBooking}>
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
         );
     }
