@@ -1,7 +1,6 @@
 import { db } from "./FirebaseApp.js";
 import { doc, collection, setDoc, addDoc, getDoc } from "firebase/firestore";
 import dayjs from 'dayjs';
-import { GetOccupancy } from "./OccupancyRepo.js";
 
 async function SaveBooking(checkInDate, checkOutDate, bookingId, bookingData) {
     // if existing booking, just set booking.
@@ -18,9 +17,11 @@ async function SaveBooking(checkInDate, checkOutDate, bookingId, bookingData) {
     // iterate from checkInDate to checkOutDate to update occupancy.
     for (var date = dayjs(checkInDate); date.isBefore(checkOutDate); date = date.add(1, 'day')) {
         var key = date.format('YYYYMMDD');
-        var currentOccupancy = await GetOccupancy(date);
-        if (currentOccupancy === null) {
-            currentOccupancy = {};
+        var currentOccupancyRes = await getDoc(doc(db, "occupancy", key));
+        var currentOccupancy = {};
+
+        if (currentOccupancyRes.exists()) {
+            currentOccupancy = currentOccupancyRes.data();
         }
 
         if (currentOccupancy[bookingData.roomNumber] === undefined || currentOccupancy[bookingData.roomNumber] === null) {

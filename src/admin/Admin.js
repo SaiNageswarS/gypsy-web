@@ -182,6 +182,7 @@ const bookingSrcIcon = {
     'agoda.com': 'https://www.agoda.com/favicon.ico',
     'goibibo/mmt': 'https://jsak.goibibo.com/pwa_v3/pwa_growth/images/favicon-96x96.2d2829e5.png',
     'airbnb.com': 'https://a0.muscache.com/airbnb/static/logotype_favicon-21cc8e6c6a2cca43f061d2dcabdf6e58.ico',
+    'walk-in': 'https://www.svgrepo.com/show/308152/walking-person-go-walk-move.svg'
 };
 
 export default Admin;
