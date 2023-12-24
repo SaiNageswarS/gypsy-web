@@ -10,6 +10,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import { GetOccupancy, RoomList } from '../repo/OccupancyRepo';
 
@@ -33,10 +36,15 @@ function Admin({ loggedInUser }) {
         return (
             <div className="Admin">
                 <Grid container spacing={0}>
-                    <Grid xs={6} md={6}>
+                    <Grid xs={5} md={5}>
                         <h1>Bookings</h1>
                     </Grid>
-                    <Grid xs={6} md={6}>
+                    <Grid xs={1} md={1} style={{ padding: '20px 0 20px 0' }}>
+                        <IconButton aria-label="back" onClick={() => setOccDate(occDate.add(-1, 'day'))}>
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Grid>
+                    <Grid xs={5} md={5} style={{ textAlign: 'center' }}>
                         <div className='OccupancyDatePicker'>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
@@ -46,6 +54,11 @@ function Admin({ loggedInUser }) {
                                     onChange={(newVal) => setOccDate(newVal)} />
                             </LocalizationProvider>
                         </div>
+                    </Grid>
+                    <Grid xs={1} md={1} style={{ padding: '20px 0 20px 0' }}>
+                        <IconButton aria-label="forward" onClick={() => setOccDate(occDate.add(1, 'day'))}>
+                            <ArrowForwardIcon />
+                        </IconButton>
                     </Grid>
                 </Grid>
                 <Occupancy inputDate={occDate} />
