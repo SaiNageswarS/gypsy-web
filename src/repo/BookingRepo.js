@@ -1,45 +1,46 @@
 import { db } from "./FirebaseApp.js";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, collection, setDoc, addDoc, getDoc } from "firebase/firestore";
 import dayjs from 'dayjs';
+import { GetOccupancy } from "./OccupancyRepo.js";
 
-async function GetBookings(bookingDate) {
-    console.log("Getting bookings for", bookingDate);
-
-    var key = dayjs(bookingDate).format('YYYYMMDD');
-    const result = await getDoc(doc(db, "booking", key));
-
-    if (!result.exists()) {
-        return {};
+async function SaveBooking(checkInDate, checkOutDate, bookingId, bookingData) {
+    // if existing booking, just set booking.
+    if (bookingId !== null) {
+        const bookingRef = doc(db, "booking", bookingId);
+        await setDoc(bookingRef, bookingData);
+        return;
     }
 
-    console.log("result", result.data());
-    return result.data();
-}
+    // else create new booking and update occupancy.
+    const bookingRef = await addDoc(collection(db, "booking"), bookingData);
+    console.log("Booking saved with ID: ", bookingRef.id);
 
-async function SaveBooking(checkInDate, checkOutDate, bookingData) {
-    // iterate from checkInDate to checkOutDate
+    // iterate from checkInDate to checkOutDate to update occupancy.
     for (var date = dayjs(checkInDate); date.isBefore(checkOutDate); date = date.add(1, 'day')) {
         var key = date.format('YYYYMMDD');
-        var currentBooking = await GetBookings(date);
-        if (currentBooking === null) {
-            currentBooking = {};
+        var currentOccupancy = await GetOccupancy(date);
+        if (currentOccupancy === null) {
+            currentOccupancy = {};
         }
 
-        if (currentBooking[bookingData.roomNumber] === undefined || currentBooking[bookingData.roomNumber] === null) {
-            currentBooking[bookingData.roomNumber] = [];
+        if (currentOccupancy[bookingData.roomNumber] === undefined || currentOccupancy[bookingData.roomNumber] === null) {
+            currentOccupancy[bookingData.roomNumber] = [];
         }
 
-        currentBooking[bookingData.roomNumber].push({
-            name: bookingData.name,
-            src: bookingData.source,
-            numBeds: bookingData.numberOfBeds,
-            amnt: bookingData.amountPending,
-            checkedIn: false,
-            checkedOut: false,
-        });
+        currentOccupancy[bookingData.roomNumber].push(bookingRef);
 
-        await setDoc(doc(db, "booking", key), currentBooking);
+        await setDoc(doc(db, "occupancy", key), currentOccupancy);
     }
 }
 
-export { GetBookings, SaveBooking };
+async function GetBooking(bookingId) {
+    const bookingRef = doc(db, "booking", bookingId);
+    const bookingDoc = await getDoc(bookingRef);
+    if (bookingDoc.exists()) {
+        return bookingDoc.data();
+    }
+
+    return null;
+}
+
+export { SaveBooking, GetBooking };

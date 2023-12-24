@@ -1,7 +1,6 @@
 import './Admin.css';
 import * as React from 'react';
 
-import { GetBookings } from '../repo/BookingRepo';
 import { useNavigate } from 'react-router-dom';
 
 import dayjs from 'dayjs';
@@ -12,8 +11,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 
+import { GetOccupancy, RoomList } from '../repo/OccupancyRepo';
+
 function Admin({ loggedInUser }) {
-    const [currentDay, setCurrentDay] = React.useState(dayjs());
+    const [occDate, setOccDate] = React.useState(dayjs());
     const navigate = useNavigate();
 
     function newBooking() {
@@ -36,18 +37,18 @@ function Admin({ loggedInUser }) {
                         <h1>Bookings</h1>
                     </Grid>
                     <Grid xs={6} md={6}>
-                        <div className='BookingDatePicker'>
+                        <div className='OccupancyDatePicker'>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
-                                    label="Booking-Date"
+                                    label="Occ-Date"
                                     format='DD-MMM-YYYY'
-                                    value={currentDay}
-                                    onChange={(newVal) => setCurrentDay(newVal)} />
+                                    value={occDate}
+                                    onChange={(newVal) => setOccDate(newVal)} />
                             </LocalizationProvider>
                         </div>
                     </Grid>
                 </Grid>
-                <Booking bookingDate={currentDay} />
+                <Occupancy inputDate={occDate} />
                 <div style={{ position: 'fixed', bottom: '62px', right: '52px', zIndex: 1000 }}>
                     <Fab color="primary" aria-label="add" onClick={newBooking}>
                         <AddIcon />
@@ -58,29 +59,29 @@ function Admin({ loggedInUser }) {
     }
 }
 
-function Booking({ bookingDate }) {
-    const [bookings, setBookings] = React.useState({});
+function Occupancy({ inputDate }) {
+    const [occupancy, setOccupancy] = React.useState({});
 
     React.useEffect(() => {
-        GetBookings(bookingDate).then((bookings) => {
-            setBookings(bookings);
+        GetOccupancy(inputDate).then((occupancy) => {
+            setOccupancy(occupancy);
         });
-    }, [bookingDate]);
+    }, [inputDate]);
 
     return (
         <table>
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Booking<br />{bookingDate.format('DD-MMM-YYYY')}</th>
+                    <th>Booking<br />{inputDate.format('DD-MMM-YYYY')}</th>
                 </tr>
             </thead>
             <tbody>
-                {Object.keys(bookings).map((roomNum) => {
+                {RoomList.map((roomNum) => {
                     return (
                         <tr key={roomNum}>
                             <td>{roomNum}</td>
-                            <td><GuestRoom guestList={bookings[roomNum]} /></td>
+                            <td style={{ padding: 0 }}><GuestRoom guestList={occupancy[roomNum]} /></td>
                         </tr>
                     );
                 })}
@@ -90,13 +91,20 @@ function Booking({ bookingDate }) {
 }
 
 function GuestRoom({ guestList }) {
+    if (guestList === undefined || guestList === null) {
+        guestList = [];
+    }
+
+    console.log('GuestRoom');
+    console.log(guestList);
+
     return (
         <table>
             <tbody>
                 {guestList.map((guest, idx) => {
                     return (
                         <tr key={idx}>
-                            <td><GuestDetail guest={guest} /></td>
+                            <td style={{ padding: 0 }}><GuestDetail guest={guest} /></td>
                         </tr>
                     );
                 })}
@@ -106,8 +114,13 @@ function GuestRoom({ guestList }) {
 }
 
 function GuestDetail({ guest }) {
+    const navigate = useNavigate();
+
     return (
-        <div className='GuestDetail'>
+        <div className='GuestDetail'
+            style={{ backgroundColor: getGuestColorCode(guest.checkedIn, guest.checkedOut) }}
+            onClick={() => { navigate(`/admin/booking/new?bookingId=${guest.id}`) }}
+        >
             <Grid container spacing={0}>
                 <Grid xs={2} md={2}>
                     <img src={bookingSrcIcon[guest.src]} alt={guest.source} />
@@ -116,14 +129,28 @@ function GuestDetail({ guest }) {
                     <div className="GuestName">{guest.name}</div>
                 </Grid>
                 <Grid xs={6} md={6}>
-                    <div className='AmntPending'> INR {guest.amnt} </div>
+                    <div className='AmntPending' style={{ color: (guest.amountPending > 0) ? '#ff7f00' : '#00aa00' }}>
+                        INR {guest.amountPending}
+                    </div>
                 </Grid>
                 <Grid xs={6} md={6}>
-                    <div className='numBeds'>Beds: {guest.numBeds}</div>
+                    <div className='numBeds'>Beds: {guest.numberOfBeds}</div>
                 </Grid>
             </Grid>
         </div>
     );
+}
+
+function getGuestColorCode(checkedIn, checkedOut) {
+    if (checkedIn === true && checkedOut === false) {
+        return '#FFCDD2';
+    }
+    else if (checkedIn === true && checkedOut === true) {
+        return '#FF00FF';
+    }
+    else {
+        return '#FFFF00';
+    }
 }
 
 const bookingSrcIcon = {

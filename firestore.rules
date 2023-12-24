@@ -2,6 +2,11 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /config/{document} {
+      allow read: if true;
+      allow write: if false; // No write access to the config collection
+    }
+
     match /{document=**} {
       allow read, write: if true;
     }

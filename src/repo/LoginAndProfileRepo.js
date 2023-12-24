@@ -19,6 +19,7 @@ async function GetLoggedInUser() {
     var result = await getRedirectResult(auth);
     if (result !== null && result.user !== null) {
         const user = result.user;
+        // allow overwrite to update profile pic etc. as per google.
         await saveProfile(user);
         user.isAdmin = await isAdmin();
         return user;
@@ -53,6 +54,10 @@ async function getProfile(userId) {
     return null;
 }
 
+/**
+ * IsAdmin is maintained in separate collection in firestore with no write access.
+ * @returns 
+ */
 async function isAdmin() {
     var userId = getAuth()?.currentUser?.uid;
     var result = false;

@@ -1,5 +1,7 @@
 import './Admin.css';
 import * as React from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import {
     TextField,
     MenuItem,
@@ -8,9 +10,12 @@ import {
     Select,
     Button,
     Grid,
+    Checkbox,
 } from '@mui/material';
+
+
 import { useNavigate } from 'react-router-dom';
-import { SaveBooking } from '../repo/BookingRepo';
+import { SaveBooking, GetBooking } from '../repo/BookingRepo';
 
 function NewBooking({ loggedInUser }) {
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
@@ -31,15 +36,28 @@ function NewBooking({ loggedInUser }) {
 }
 
 function RoomBookingForm() {
+    const [searchParams] = useSearchParams();
+    const bookingId = searchParams.get('bookingId');
+
     const [formData, setFormData] = React.useState({
         name: '',
         roomNumber: '',
         checkInDate: '',
         checkOutDate: '',
-        source: '',
+        src: '',
         numberOfBeds: 1,
         amountPending: 0,
+        checkedIn: false,
+        checkedOut: false,
     });
+
+    React.useEffect(() => {
+        if (bookingId !== null) {
+            GetBooking(bookingId).then((booking) => {
+                setFormData(booking);
+            });
+        }
+    }, [bookingId]);
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -50,12 +68,17 @@ function RoomBookingForm() {
         setFormData((prevData) => ({ ...prevData, [name]: value }));
     };
 
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData((prevData) => ({ ...prevData, [name]: checked }));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!isSubmitting) {
             setIsSubmitting(true);
-            SaveBooking(formData.checkInDate, formData.checkOutDate, formData).then(() => {
+            SaveBooking(formData.checkInDate, formData.checkOutDate, bookingId, formData).then(() => {
                 setIsSubmitting(false);
                 navigate('/admin');
             });
@@ -128,7 +151,7 @@ function RoomBookingForm() {
                         <InputLabel>Source</InputLabel>
                         <Select
                             name="source"
-                            value={formData.source}
+                            value={formData.src}
                             onChange={handleInputChange}
                         >
                             <MenuItem value="booking.com">Booking.com</MenuItem>
@@ -155,13 +178,28 @@ function RoomBookingForm() {
                 </Grid>
                 <Grid item xs={6} md={6}>
                     <TextField
-                        fullWidth
-                        label="amountPending"
+                        label="Amount Pending"
                         type="number"
-                        name="Amount Pending"
+                        name="amountPending"
                         value={formData.amountPending}
                         onChange={handleInputChange}
+                        fullWidth
+                        required
                     />
+                </Grid>
+                <Grid item xs={6} md={6}>
+                    <Checkbox
+                        name="checkedIn"
+                        checked={formData.checkedIn}
+                        onChange={handleCheckboxChange}
+                    /> Checked In
+                </Grid>
+                <Grid item xs={6} md={6}>
+                    <Checkbox
+                        name="checkedOut"
+                        checked={formData.checkedOut}
+                        onChange={handleCheckboxChange}
+                    /> Checked Out
                 </Grid>
                 <Grid item xs={6} md={6}>
                     <Button type="submit"
