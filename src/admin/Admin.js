@@ -80,7 +80,15 @@ function Occupancy({ inputDate }) {
                 {RoomList.map((roomNum) => {
                     return (
                         <tr key={roomNum}>
-                            <td>{roomNum}</td>
+                            <td>
+                                <div className='roomNum'>{roomNum}</div>
+                                <div
+                                    className='occupancyPct'
+                                    style={{ backgroundColor: (getOccupancyCnt(occupancy[roomNum]) >= roomCapacity[roomNum]) ? '#ff0000' : '#00ff00' }}
+                                >
+                                    {getOccupancyCnt(occupancy[roomNum])}/{roomCapacity[roomNum]}
+                                </div>
+                            </td>
                             <td style={{ padding: 0 }}><GuestRoom guestList={occupancy[roomNum]} /></td>
                         </tr>
                     );
@@ -152,6 +160,21 @@ function getGuestColorCode(checkedIn, checkedOut) {
         return '#FFFF00';
     }
 }
+
+function getOccupancyCnt(guestList) {
+    if (guestList === undefined || guestList === null || guestList.length === 0) {
+        return 0;
+    }
+
+    var occupiedBeds = guestList
+        .filter(guest => guest.checkedOut === false)
+        .map(guest => guest.numberOfBeds)
+        .reduce((a, b) => a + b, 0);
+    return occupiedBeds;
+}
+
+const roomCapacity = { "101": 1, "102": 1, "103": 1, "104": 8, "201": 6, "202": 6, "203": 6, "204": 8, "301": 1, "302": 1, "303": 1, "304": 1 };
+
 
 const bookingSrcIcon = {
     'booking.com': 'https://cf.bstatic.com/static/img/favicon/9ca83ba2a5a3293ff07452cb24949a5843af4592.svg',
