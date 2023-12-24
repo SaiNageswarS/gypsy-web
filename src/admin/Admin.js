@@ -169,7 +169,7 @@ function getOccupancyCnt(guestList) {
     var occupiedBeds = guestList
         .filter(guest => guest.checkedOut === false)
         .map(guest => guest.numberOfBeds)
-        .reduce((a, b) => a + b, 0);
+        .reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0);
     return occupiedBeds;
 }
 
