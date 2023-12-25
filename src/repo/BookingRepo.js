@@ -1,5 +1,5 @@
 import { db } from "./FirebaseApp.js";
-import { doc, collection, setDoc, addDoc, getDoc } from "firebase/firestore";
+import { doc, collection, setDoc, addDoc, getDoc, deleteDoc } from "firebase/firestore";
 import dayjs from 'dayjs';
 
 async function SaveBooking(checkInDate, checkOutDate, bookingId, bookingData) {
@@ -44,4 +44,29 @@ async function GetBooking(bookingId) {
     return null;
 }
 
-export { SaveBooking, GetBooking };
+async function DeleteBooking(bookingId) {
+    // delete booking from occupancy.
+    const booking = await GetBooking(bookingId);
+    for (var date = dayjs(booking.checkInDate); date.isBefore(booking.checkOutDate); date = date.add(1, 'day')) {
+        var key = date.format('YYYYMMDD');
+        var currentOccupancyRes = await getDoc(doc(db, "occupancy", key));
+        var currentOccupancy = {};
+
+        if (currentOccupancyRes.exists()) {
+            currentOccupancy = currentOccupancyRes.data();
+        }
+
+        if (currentOccupancy[booking.roomNumber] === undefined || currentOccupancy[booking.roomNumber] === null) {
+            currentOccupancy[booking.roomNumber] = [];
+        }
+
+        currentOccupancy[booking.roomNumber] = currentOccupancy[booking.roomNumber].filter(booking => booking.id !== bookingId);
+
+        await setDoc(doc(db, "occupancy", key), currentOccupancy);
+    }
+
+    const bookingRef = doc(db, "booking", bookingId);
+    await deleteDoc(bookingRef);
+}
+
+export { SaveBooking, GetBooking, DeleteBooking };

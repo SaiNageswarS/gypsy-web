@@ -1,6 +1,8 @@
 import './Admin.css';
 import * as React from 'react';
 import { useSearchParams } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 
 import {
     TextField,
@@ -15,7 +17,7 @@ import {
 
 
 import { useNavigate } from 'react-router-dom';
-import { SaveBooking, GetBooking } from '../repo/BookingRepo';
+import { SaveBooking, GetBooking, DeleteBooking } from '../repo/BookingRepo';
 
 function NewBooking({ loggedInUser }) {
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
@@ -201,7 +203,7 @@ function RoomBookingForm() {
                         onChange={handleCheckboxChange}
                     /> Checked Out
                 </Grid>
-                <Grid item xs={6} md={6}>
+                <Grid item xs={5} md={5}>
                     <Button type="submit"
                         variant="contained"
                         color="primary"
@@ -212,7 +214,7 @@ function RoomBookingForm() {
                         {isSubmitting ? 'Submitting...' : 'Submit'}
                     </Button>
                 </Grid>
-                <Grid item xs={6} md={6}>
+                <Grid item xs={5} md={5}>
                     <Button
                         variant="contained"
                         color="secondary"
@@ -222,6 +224,16 @@ function RoomBookingForm() {
                     >
                         Cancel
                     </Button>
+                </Grid>
+
+                <Grid item xs={2} md={2}>
+                    <IconButton
+                        aria-label="delete"
+                        color="error"
+                        onClick={() => { DeleteBooking(bookingId).then(() => { navigate('/admin') }) }}
+                    >
+                        <DeleteIcon style={{ fontSize: '40px' }} />
+                    </IconButton>
                 </Grid>
             </Grid>
         </form>

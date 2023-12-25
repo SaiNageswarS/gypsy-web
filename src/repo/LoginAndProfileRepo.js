@@ -1,39 +1,28 @@
 import { db } from "./FirebaseApp.js";
-import { getAuth, signOut, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { getAuth, signOut, signInWithPopup, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 async function Login() {
     console.log("Initiating login");
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
-    await signInWithRedirect(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    if (result !== null && result.user !== null) {
+        const user = result.user;
+        // allow overwrite to update profile pic etc. as per google.
+        await saveProfile(user);
+        user.isAdmin = await IsAdmin(user.uid);
+        return user;
+    }
+
+    return null;
 }
 
 async function Logout() {
     const auth = getAuth();
     await signOut(auth);
-}
-
-async function GetLoggedInUser() {
-    const auth = getAuth();
-    var result = await getRedirectResult(auth);
-    if (result !== null && result.user !== null) {
-        const user = result.user;
-        // allow overwrite to update profile pic etc. as per google.
-        await saveProfile(user);
-        user.isAdmin = await isAdmin();
-        return user;
-    }
-
-    // check if user is loggedIn
-    const currentUser = auth.currentUser;
-    if (currentUser !== null) {
-        var profile = await getProfile(currentUser.uid);
-        profile.isAdmin = await isAdmin();
-        return profile;
-    }
-
-    return null;
+    // Reload the current page
+    window.location.reload();
 }
 
 async function saveProfile(user) {
@@ -58,8 +47,7 @@ async function getProfile(userId) {
  * IsAdmin is maintained in separate collection in firestore with no write access.
  * @returns 
  */
-async function isAdmin() {
-    var userId = getAuth()?.currentUser?.uid;
+async function IsAdmin(userId) {
     var result = false;
 
     if (userId === null || userId === undefined) {
@@ -76,4 +64,4 @@ async function isAdmin() {
     return result;
 }
 
-export { Login, Logout, GetLoggedInUser };
+export { Login, Logout, IsAdmin };
