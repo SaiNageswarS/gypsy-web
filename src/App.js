@@ -110,6 +110,18 @@ function UserAvatar({ loggedInUser }) {
     setAnchorEl(null);
   };
 
+  function UserMenu({ IsAdmin }) {
+    const navigate = useNavigate();
+
+    return (
+      <ul>
+        {IsAdmin && <li><Link href="#" onClick={() => { navigate('/admin'); closeUserActionsPopUp(); }}>
+          Admin</Link></li>}
+        <li><Link href="#" onClick={Logout}>Logout</Link></li>
+      </ul>
+    );
+  }
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
@@ -140,17 +152,6 @@ function UserAvatar({ loggedInUser }) {
         </div>
       </Popover>
     </div>
-  );
-}
-
-function UserMenu({ IsAdmin }) {
-  const navigate = useNavigate();
-
-  return (
-    <ul>
-      {IsAdmin && <li><Link href="#" onClick={() => navigate('/admin')}>Admin</Link></li>}
-      <li><Link href="#" onClick={Logout}>Logout</Link></li>
-    </ul>
   );
 }
 

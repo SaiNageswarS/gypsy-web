@@ -80,9 +80,9 @@ function RoomBookingForm() {
 
         if (!isSubmitting) {
             setIsSubmitting(true);
-            SaveBooking(formData.checkInDate, formData.checkOutDate, bookingId, formData).then(() => {
+            SaveBooking(bookingId, formData).then(() => {
                 setIsSubmitting(false);
-                navigate('/admin');
+                navigate(-1);
             });
         }
     };
@@ -220,7 +220,7 @@ function RoomBookingForm() {
                         color="secondary"
                         fullWidth
                         style={{ height: '60px' }}
-                        onClick={() => navigate('/admin')}
+                        onClick={() => navigate(-1)}
                     >
                         Cancel
                     </Button>
@@ -230,7 +230,7 @@ function RoomBookingForm() {
                     <IconButton
                         aria-label="delete"
                         color="error"
-                        onClick={() => { DeleteBooking(bookingId).then(() => { navigate('/admin') }) }}
+                        onClick={() => { DeleteBooking(bookingId).then(() => { navigate(-1) }) }}
                     >
                         <DeleteIcon style={{ fontSize: '40px' }} />
                     </IconButton>

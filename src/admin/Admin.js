@@ -1,7 +1,7 @@
 import './Admin.css';
 import * as React from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import dayjs from 'dayjs';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -14,10 +14,22 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import { GetOccupancy, RoomList } from '../repo/OccupancyRepo';
+import { GetOccupancy, RefreshOccupancy, RoomList } from '../repo/OccupancyRepo';
 
 function Admin({ loggedInUser }) {
-    const [occDate, setOccDate] = React.useState(dayjs());
+    const [searchParams] = useSearchParams();
+    var occDate = searchParams.get('occDate');
+    if (occDate === null) {
+        occDate = dayjs();
+    }
+    else {
+        occDate = dayjs(occDate);
+    }
+
+    function setOccDate(newDate) {
+        navigate(`/admin?occDate=${newDate.format('YYYY-MM-DD')}`);
+    }
+
     const navigate = useNavigate();
 
     function newBooking() {
