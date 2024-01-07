@@ -2,8 +2,9 @@ import { db } from "./FirebaseApp.js";
 import { doc, collection, setDoc, addDoc, getDoc, deleteDoc } from "firebase/firestore";
 import dayjs from 'dayjs';
 import { DeleteOccupancy, SaveOccupancy } from "./OccupancyRepo.js";
+import { SaveBills } from "./BillsRepo.js";
 
-async function SaveBooking(bookingId, bookingData) {
+async function SaveBooking(bookingId, bookingData, bills) {
     if (bookingId !== null) {
         // if existing booking, delete old occupancy.
         const existingBooking = await GetBooking(bookingId);
@@ -18,6 +19,7 @@ async function SaveBooking(bookingId, bookingData) {
         bookingData.id = bookingRef.id;
     }
 
+    await SaveBills(bookingData.id, bills);
     await SaveOccupancy(bookingData);
 }
 

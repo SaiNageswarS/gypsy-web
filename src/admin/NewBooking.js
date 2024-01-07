@@ -2,7 +2,6 @@ import './Admin.css';
 import * as React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
 
 import {
     TextField,
@@ -13,11 +12,13 @@ import {
     Button,
     Grid,
     Checkbox,
+    IconButton,
 } from '@mui/material';
-
+import BillsComponent from './BillsComponent';
 
 import { useNavigate } from 'react-router-dom';
 import { SaveBooking, GetBooking, DeleteBooking } from '../repo/BookingRepo';
+import { GetBills } from '../repo/BillsRepo';
 
 function NewBooking({ loggedInUser }) {
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
@@ -32,14 +33,15 @@ function NewBooking({ loggedInUser }) {
     return (
         <div className="NewBooking">
             <h1>New Booking</h1>
-            <RoomBookingForm />
+            <RoomBookingForm loggedInUser={loggedInUser} />
         </div>
     );
 }
 
-function RoomBookingForm() {
+function RoomBookingForm({ loggedInUser }) {
     const [searchParams] = useSearchParams();
     const bookingId = searchParams.get('bookingId');
+    const [bills, setBills] = React.useState([]);
 
     const [formData, setFormData] = React.useState({
         name: '',
@@ -53,12 +55,23 @@ function RoomBookingForm() {
         checkedOut: false,
     });
 
+    function handleSetBills(newBills) {
+        formData.amountPending = newBills.reduce((acc, curr) => parseFloat(acc) + parseFloat(curr.amount), 0);
+        setBills(newBills);
+    }
+
     React.useEffect(() => {
         if (bookingId !== null) {
             GetBooking(bookingId).then((booking) => {
                 setFormData(booking);
             });
         }
+    }, [bookingId]);
+
+    React.useEffect(() => {
+        GetBills(bookingId).then((bills) => {
+            handleSetBills(bills);
+        });
     }, [bookingId]);
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -80,7 +93,7 @@ function RoomBookingForm() {
 
         if (!isSubmitting) {
             setIsSubmitting(true);
-            SaveBooking(bookingId, formData).then(() => {
+            SaveBooking(bookingId, formData, bills).then(() => {
                 setIsSubmitting(false);
                 navigate(-1);
             });
@@ -186,7 +199,9 @@ function RoomBookingForm() {
                         value={formData.amountPending}
                         onChange={handleInputChange}
                         fullWidth
-                        required
+                        InputProps={{
+                            readOnly: true,
+                        }}
                     />
                 </Grid>
                 <Grid item xs={6} md={6}>
@@ -202,6 +217,9 @@ function RoomBookingForm() {
                         checked={formData.checkedOut}
                         onChange={handleCheckboxChange}
                     /> Checked Out
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    <BillsComponent loggedInUser={loggedInUser} bills={bills} setBills={handleSetBills} />
                 </Grid>
                 <Grid item xs={5} md={5}>
                     <Button type="submit"
