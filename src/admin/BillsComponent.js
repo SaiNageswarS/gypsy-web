@@ -77,12 +77,7 @@ function BillsComponent({ loggedInUser, bills, setBills }) {
                                 <TableRow key={idx}>
                                     <TableCell>{bill.date}</TableCell>
                                     <TableCell>{bill.description}</TableCell>
-                                    <TableCell>
-                                        <TextField
-                                            value={bill.amount}
-                                            onChange={(e) => handleAmntEdit(idx, e.target.value)}
-                                        />
-                                    </TableCell>
+                                    <TableCell>{bill.amount}</TableCell>
                                     <TableCell>{bill.cashier}</TableCell>
                                     <TableCell>
                                         <IconButton aria-label="delete" onClick={() => { deleteBill(idx) }}>
