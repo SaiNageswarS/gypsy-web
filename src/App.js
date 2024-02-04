@@ -18,10 +18,11 @@ import Link from '@mui/material/Link';
 
 import Landing from './landing/Landing';
 import Inventory from './inventory/Inventory';
-import Admin from './admin/Admin';
 import NewBooking from './admin/NewBooking';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import RoomOccupancy from './admin/RoomOccupancy';
+import CashSheet from './admin/CashSheet';
 
 const auth = getAuth();
 
@@ -89,7 +90,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/inventory" element={<Inventory />} />
-              <Route path="/admin" element={<Admin loggedInUser={user} />} />
+              <Route path="/admin/occupancy" element={<RoomOccupancy loggedInUser={user} />} />
+              <Route path="/admin/cashsheet" element={<CashSheet loggedInUser={user} />} />
               <Route path="/admin/booking/new" element={<NewBooking loggedInUser={user} />} />
             </Routes>
           </Grid>
@@ -115,7 +117,7 @@ function UserAvatar({ loggedInUser }) {
 
     return (
       <ul>
-        {IsAdmin && <li><Link href="#" onClick={() => { navigate('/admin'); closeUserActionsPopUp(); }}>
+        {IsAdmin && <li><Link href="#" onClick={() => { navigate('/admin/occupancy'); closeUserActionsPopUp(); }}>
           Admin</Link></li>}
         <li><Link href="#" onClick={Logout}>Logout</Link></li>
       </ul>

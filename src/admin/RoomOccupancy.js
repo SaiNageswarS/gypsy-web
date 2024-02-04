@@ -14,9 +14,12 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
 import { GetOccupancy, RefreshOccupancy, RoomList } from '../repo/OccupancyRepo';
 
-function Admin({ loggedInUser }) {
+function RoomOccupancy({ loggedInUser }) {
     const [searchParams] = useSearchParams();
     var occDate = searchParams.get('occDate');
     if (occDate === null) {
@@ -27,13 +30,23 @@ function Admin({ loggedInUser }) {
     }
 
     function setOccDate(newDate) {
-        navigate(`/admin?occDate=${newDate.format('YYYY-MM-DD')}`);
+        navigate(`/admin/occupancy?occDate=${newDate.format('YYYY-MM-DD')}`);
     }
 
+    const tabIdx = 0;
     const navigate = useNavigate();
 
     function newBooking() {
         navigate('/admin/booking/new');
+    }
+
+    function handleTabChange(event, newTabIdx) {
+        if (newTabIdx === 0) {
+            navigate('/admin/occupancy');
+        }
+        else if (newTabIdx === 1) {
+            navigate('/admin/cashsheet');
+        }
     }
 
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
@@ -47,6 +60,10 @@ function Admin({ loggedInUser }) {
     else {
         return (
             <div className="Admin">
+                <Tabs value={tabIdx} onChange={handleTabChange} aria-label="admin tabs">
+                    <Tab label="Occupancy" />
+                    <Tab label="Cash Sheet" />
+                </Tabs>
                 <Grid container spacing={0}>
                     <Grid xs={5} md={5}>
                         <h1>Bookings</h1>
@@ -210,4 +227,4 @@ const bookingSrcIcon = {
     'walk-in': 'https://www.svgrepo.com/show/308152/walking-person-go-walk-move.svg'
 };
 
-export default Admin;
+export default RoomOccupancy;
