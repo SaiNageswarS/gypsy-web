@@ -137,6 +137,11 @@ function NewBillDialog({ loggedInUser, bills, setBills, isDialogOpen, setDialogO
                                     <MenuItem value="Room Rent">Room Rent</MenuItem>
                                     <MenuItem value="Food">Food</MenuItem>
                                     <MenuItem value="Laundry">Laundry</MenuItem>
+                                    <MenuItem value="Taxi Profit">Taxi Profit</MenuItem>
+                                    <MenuItem value="Exchange Profit">Exchange Profit</MenuItem>
+                                    <MenuItem value="Sor Profit">Sor Profit</MenuItem>
+                                    <MenuItem value="Early CheckIn">Early CheckIn</MenuItem>
+                                    <MenuItem value="Late Checkout">Late CheckOut</MenuItem>
                                     <MenuItem value="Credit">Credit</MenuItem>
                                     <MenuItem value="Other">Other</MenuItem>
                                 </Select>

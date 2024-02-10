@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { GetCashSheet } from '../repo/CashsheetRepo';
 
 function CashSheet({ loggedInUser }) {
     const [searchParams] = useSearchParams();
@@ -30,7 +31,7 @@ function CashSheet({ loggedInUser }) {
     }
 
     if (month === null) {
-        month = new Date().toLocaleString('default', { month: 'long' });
+        month = new Date().toLocaleString('default', { month: 'short' });
     }
 
     if (year === null) {
@@ -53,25 +54,67 @@ function CashSheet({ loggedInUser }) {
                     <Tab label="Cash Sheet" />
                 </Tabs>
                 <Grid container spacing={0}>
-                    <Grid xs={5} md={5}>
+                    <Grid xs={6} md={6}>
                         <h1>Cash Sheet</h1>
                     </Grid>
-                    <Grid xs={7} md={7} style={{ textAlign: 'center' }}>
+                    <Grid xs={6} md={6} style={{ textAlign: 'right', paddingRight: '8px' }}>
                         <MonthYearSelector selectedMonth={month} selectedYear={year} />
                     </Grid>
                 </Grid>
 
+                <CashSheetTable selectedMonth={month} selectedYear={year} />
             </div>
         );
     }
+}
+
+function CashSheetTable({ selectedMonth, selectedYear }) {
+    const [cashSheet, setCashSheet] = React.useState([]);
+
+    React.useEffect(() => {
+        GetCashSheet(selectedMonth, selectedYear).then((data) => {
+            setCashSheet(data);
+        });
+    }, [selectedMonth, selectedYear]);
+
+    return (
+        <div>
+            <Grid container spacing={0}>
+                <Grid xs={6} md={6}>
+                    <h2>{selectedMonth} {selectedYear}</h2>
+                </Grid>
+                <Grid xs={6} md={6} style={{ textAlign: 'right', paddingRight: '8px' }}>
+                    <h2>Total: INR {cashSheet.reduce((acc, row) => acc + parseFloat(row.amount), 0)}</h2>
+                </Grid>
+            </Grid>
+            <table>
+                <thead>
+                    <tr>
+                        <th>BookingId</th>
+                        <th>Type</th>
+                        <th>Income</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cashSheet.map((row, index) => (
+                        <tr key={index}>
+                            <td>{row.bookingId}</td>
+                            <td>{row.type}</td>
+                            <td>INR {row.amount}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }
 
 function MonthYearSelector({ selectedMonth, selectedYear }) {
     const navigate = useNavigate();
 
     const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June',
+        'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
     ];
 
     const handleMonthChange = function (newMonth) {
@@ -84,14 +127,13 @@ function MonthYearSelector({ selectedMonth, selectedYear }) {
 
     return (
         <div>
-            <FormControl style={{ padding: '10px 5px' }}>
+            <FormControl style={{ padding: '10px 2px' }}>
                 <InputLabel id="month-select-label">Month</InputLabel>
                 <Select
                     labelId="month-select-label"
                     id="month-select"
                     value={selectedMonth}
                     onChange={(e) => handleMonthChange(e.target.value)}
-                    style={{ width: '120px' }}
                 >
                     {months.map((month, index) => (
                         <MenuItem key={index} value={month}>
@@ -100,14 +142,13 @@ function MonthYearSelector({ selectedMonth, selectedYear }) {
                     ))}
                 </Select>
             </FormControl>
-            <FormControl style={{ padding: '10px 5px' }}>
+            <FormControl style={{ padding: '10px 2px' }}>
                 <InputLabel id="year-select-label">Year</InputLabel>
                 <Select
                     labelId="year-select-label"
                     id="year-select"
                     value={selectedYear}
                     onChange={(e) => handleYearChange(e.target.value)}
-                    style={{ width: '100px' }}
                 >
                     {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((year) => (
                         <MenuItem key={year} value={year}>
