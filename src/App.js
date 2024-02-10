@@ -22,6 +22,7 @@ import NewBooking from './admin/NewBooking';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import RoomOccupancy from './admin/RoomOccupancy';
+import NewExpense from './admin/NewExpense';
 import CashSheet from './admin/CashSheet';
 
 const auth = getAuth();
@@ -93,6 +94,7 @@ function App() {
               <Route path="/admin/occupancy" element={<RoomOccupancy loggedInUser={user} />} />
               <Route path="/admin/cashsheet" element={<CashSheet loggedInUser={user} />} />
               <Route path="/admin/booking/new" element={<NewBooking loggedInUser={user} />} />
+              <Route path="/admin/expense/new" element={<NewExpense loggedInUser={user} />} />
             </Routes>
           </Grid>
         </Grid>

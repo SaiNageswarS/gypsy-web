@@ -8,7 +8,8 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-
+import AddIcon from '@mui/icons-material/Add';
+import Fab from '@mui/material/Fab';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { GetCashSheet } from '../repo/CashsheetRepo';
@@ -38,6 +39,10 @@ function CashSheet({ loggedInUser }) {
         year = new Date().getFullYear();
     }
 
+    function newExpense() {
+        navigate('/admin/expense/new');
+    }
+
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
         return (
             <div className="Admin">
@@ -63,6 +68,11 @@ function CashSheet({ loggedInUser }) {
                 </Grid>
 
                 <CashSheetTable selectedMonth={month} selectedYear={year} />
+                <div style={{ position: 'fixed', bottom: '62px', right: '52px', zIndex: 1000 }}>
+                    <Fab color="primary" aria-label="add" onClick={newExpense}>
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
         );
     }
@@ -72,6 +82,7 @@ function CashSheetTable({ selectedMonth, selectedYear }) {
     const [cashSheet, setCashSheet] = React.useState([]);
 
     React.useEffect(() => {
+        setCashSheet([]);
         GetCashSheet(selectedMonth, selectedYear).then((data) => {
             setCashSheet(data);
         });

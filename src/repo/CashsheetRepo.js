@@ -3,7 +3,11 @@ import { db } from "./FirebaseApp.js";
 import { getDocs, collection, query, where } from "firebase/firestore";
 
 async function GetCashSheet(month, year) {
-    const bookings = await GetBookings(month, year);
+    const bookingsPromise = GetBookings(month, year);
+    const expensesPromise = GetExpenses(month, year);
+
+    const [bookings, expenses] = await Promise.all([bookingsPromise, expensesPromise]);
+
     const result = [];
 
     for (var booking of bookings) {
@@ -17,9 +21,17 @@ async function GetCashSheet(month, year) {
             result.push({
                 bookingId: booking,
                 type: bill.description,
-                amount: bill.amount
+                amount: parseFloat(bill.amount)
             });
         }
+    }
+
+    for (var expense of expenses) {
+        result.push({
+            bookingId: expense.id,
+            type: expense.description,
+            amount: 0 - parseFloat(expense.amount)
+        });
     }
 
     return result;
@@ -39,9 +51,26 @@ async function GetBookings(month, year) {
         where('checkedOut', '==', true));
 
     const snapshot = await getDocs(q);
-    const result = snapshot.docs.map(doc => doc.data().id);
-    console.log("cashSheet result", result);
+    const result = snapshot.docs.map(doc => doc.id);
+    // console.log("cashSheet result", result);
 
+    return result;
+}
+
+async function GetExpenses(month, year) {
+    const startDateString = `${year}-${monthsMap[month]}`;
+
+    if (month === "Dec") year = (parseInt(year) + 1).toString();
+
+    const endDateString = `${year}-${nextMonthMap[month]}`;
+
+    const collectionRef = collection(db, 'expenses');
+    const q = query(collectionRef,
+        where('date', '>=', startDateString),
+        where('date', '<', endDateString));
+
+    const snapshot = await getDocs(q);
+    const result = snapshot.docs.map(doc => { return { id: doc.id, ...doc.data() } });
     return result;
 }
 
