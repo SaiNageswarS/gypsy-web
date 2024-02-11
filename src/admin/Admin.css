@@ -41,6 +41,13 @@ th {
     cursor: pointer;
 }
 
+.CashsheetTable img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
 .AmntPending {
     font-weight: 600;
     font-size: 1rem;

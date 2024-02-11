@@ -98,24 +98,26 @@ function CashSheetTable({ selectedMonth, selectedYear }) {
                     <h2>Total: INR {cashSheet.reduce((acc, row) => acc + parseFloat(row.amount), 0)}</h2>
                 </Grid>
             </Grid>
-            <table>
-                <thead>
-                    <tr>
-                        <th>BookingId</th>
-                        <th>Type</th>
-                        <th>Income</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cashSheet.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.bookingId}</td>
-                            <td>{row.type}</td>
-                            <td>INR {row.amount}</td>
+            <div className='CashsheetTable'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Detail</th>
+                            <th>Type</th>
+                            <th>Income</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {cashSheet.map((row, index) => (
+                            <tr key={index}>
+                                <td><img src={bookingSrcIcon[row.source]} alt={row.source} /> {row.detail}</td>
+                                <td>{row.type}</td>
+                                <td>INR {row.amount}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
@@ -171,5 +173,14 @@ function MonthYearSelector({ selectedMonth, selectedYear }) {
         </div>
     );
 }
+
+const bookingSrcIcon = {
+    'booking.com': 'https://cf.bstatic.com/static/img/favicon/9ca83ba2a5a3293ff07452cb24949a5843af4592.svg',
+    'hostelworld.com': 'https://www.hostelworld.com/favicon.ico',
+    'agoda.com': 'https://www.agoda.com/favicon.ico',
+    'goibibo/mmt': 'https://jsak.goibibo.com/pwa_v3/pwa_growth/images/favicon-96x96.2d2829e5.png',
+    'airbnb.com': 'https://a0.muscache.com/airbnb/static/logotype_favicon-21cc8e6c6a2cca43f061d2dcabdf6e58.ico',
+    'walk-in': 'https://www.svgrepo.com/show/308152/walking-person-go-walk-move.svg'
+};
 
 export default CashSheet;

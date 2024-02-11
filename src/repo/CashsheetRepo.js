@@ -11,7 +11,7 @@ async function GetCashSheet(month, year) {
     const result = [];
 
     for (var booking of bookings) {
-        const bills = await GetBills(booking);
+        const bills = await GetBills(booking.id);
 
         for (var bill of bills) {
             if (bill.description === "Credit") {
@@ -19,7 +19,8 @@ async function GetCashSheet(month, year) {
             }
 
             result.push({
-                bookingId: booking,
+                detail: booking.name,
+                source: booking.src,
                 type: bill.description,
                 amount: parseFloat(bill.amount)
             });
@@ -28,9 +29,10 @@ async function GetCashSheet(month, year) {
 
     for (var expense of expenses) {
         result.push({
-            bookingId: expense.id,
+            detail: "Expense",
             type: expense.description,
-            amount: 0 - parseFloat(expense.amount)
+            amount: 0 - parseFloat(expense.amount),
+            source: ""
         });
     }
 
@@ -51,7 +53,7 @@ async function GetBookings(month, year) {
         where('checkedOut', '==', true));
 
     const snapshot = await getDocs(q);
-    const result = snapshot.docs.map(doc => doc.id);
+    const result = snapshot.docs.map(doc => doc.data());
     // console.log("cashSheet result", result);
 
     return result;
