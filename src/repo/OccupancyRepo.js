@@ -92,6 +92,21 @@ async function RefreshOccupancy() {
     }
 }
 
-const RoomList = ["101", "102", "103", "104", "201", "202", "203", "204", "301", "302", "303", "304"];
+function GetRoomList() {
+    const result = [];
 
-export { GetOccupancy, DeleteOccupancy, SaveOccupancy, RefreshOccupancy, RoomList };
+    for (var roomNum of Object.keys(RoomCapacity)) {
+        const capacity = RoomCapacity[roomNum];
+        result.push({ roomNumber: roomNum, idx: 0 });
+
+        for (var i = 1; i < capacity; i++) {
+            result.push({ roomNumber: roomNum, idx: i });
+        }
+    }
+
+    return result;
+}
+
+const RoomCapacity = { "101": 1, "102": 1, "103": 1, "104": 8, "201": 6, "202": 6, "203": 6, "204": 8, "301": 1, "302": 1, "303": 1, "304": 1 };
+
+export { GetOccupancy, DeleteOccupancy, SaveOccupancy, RefreshOccupancy, GetRoomList, RoomCapacity };

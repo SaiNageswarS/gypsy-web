@@ -13,11 +13,12 @@ import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import { GetOccupancy, RefreshOccupancy, RoomList } from '../repo/OccupancyRepo';
+import { GetOccupancy, RefreshOccupancy, GetRoomList, RoomCapacity } from '../repo/OccupancyRepo';
 
 function RoomOccupancy({ loggedInUser }) {
     const [searchParams] = useSearchParams();
@@ -103,72 +104,73 @@ function RoomOccupancy({ loggedInUser }) {
 
 function Occupancy({ inputDate }) {
     const [occupancy, setOccupancy] = React.useState({});
+    const [prevOccupancy, setPrevOccupancy] = React.useState({});
 
     React.useEffect(() => {
+        setOccupancy({});
+        setPrevOccupancy({});
+
         GetOccupancy(inputDate).then((occupancy) => {
             setOccupancy(occupancy);
+        });
+
+        GetOccupancy(inputDate.add(-1, 'day')).then((occupancy) => {
+            setPrevOccupancy(occupancy);
         });
     }, [inputDate]);
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Booking<br />{inputDate.format('DD-MMM-YYYY')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {RoomList.map((roomNum) => {
-                    return (
-                        <tr key={roomNum}>
-                            <td>
-                                <div className='roomNum'>{roomNum}</div>
-                                <div
-                                    className='occupancyPct'
-                                    style={{ backgroundColor: (getOccupancyCnt(occupancy[roomNum]) >= roomCapacity[roomNum]) ? '#ff0000' : '#00ff00' }}
-                                >
-                                    {getOccupancyCnt(occupancy[roomNum])}/{roomCapacity[roomNum]}
-                                </div>
-                            </td>
-                            <td style={{ padding: 0 }}><GuestRoom guestList={occupancy[roomNum]} /></td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>#</TableCell>
+                        <TableCell>Booking<br />{inputDate.add(-1, 'day').format('DD-MMM-YYYY')}</TableCell>
+                        <TableCell>Booking<br />{inputDate.format('DD-MMM-YYYY')}</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {GetRoomList().map((roomNumKey, roomIdx) => {
+                        return (
+                            <TableRow key={roomIdx}>
+                                {
+                                    (roomNumKey['idx'] === 0) &&
+                                    <TableCell rowSpan={RoomCapacity[roomNumKey['roomNumber']]}>
+                                        <div>{roomNumKey['roomNumber']}</div>
+                                        <div
+                                            className='occupancyPct'
+                                            style={{ backgroundColor: (getOccupancyCnt(occupancy[roomNumKey['roomNumber']]) >= RoomCapacity[roomNumKey['roomNumber']]) ? '#ff0000' : '#00ff00' }}
+                                        >
+                                            {getOccupancyCnt(occupancy[roomNumKey['roomNumber']])}/{RoomCapacity[roomNumKey['roomNumber']]}
+                                        </div>
+                                    </TableCell>
+                                }
+                                <TableCell style={{ padding: 0, backgroundColor: getGuestColorCode(prevOccupancy[roomNumKey['roomNumber']], roomNumKey['idx']) }}>
+                                    <GuestDetail guestList={prevOccupancy[roomNumKey['roomNumber']]} idx={roomNumKey['idx']} />
+                                </TableCell>
+                                <TableCell style={{ padding: 0, backgroundColor: getGuestColorCode(occupancy[roomNumKey['roomNumber']], roomNumKey['idx']) }}>
+                                    <GuestDetail guestList={occupancy[roomNumKey['roomNumber']]} idx={roomNumKey['idx']} />
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 }
 
-function GuestRoom({ guestList }) {
-    if (guestList === undefined || guestList === null) {
-        guestList = [];
+function GuestDetail({ guestList, idx }) {
+    const navigate = useNavigate();
+
+    if (guestList === undefined || guestList === null || idx >= guestList.length) {
+        return (<div></div>);
     }
 
-    console.log('GuestRoom');
-    console.log(guestList);
-
-    return (
-        <table>
-            <tbody>
-                {guestList.map((guest, idx) => {
-                    return (
-                        <tr key={idx}>
-                            <td style={{ padding: 0 }}><GuestDetail guest={guest} /></td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
-    );
-}
-
-function GuestDetail({ guest }) {
-    const navigate = useNavigate();
+    const guest = guestList[idx];
 
     return (
         <div className='GuestDetail'
-            style={{ backgroundColor: getGuestColorCode(guest.checkedIn, guest.checkedOut) }}
             onClick={() => { navigate(`/admin/booking/new?bookingId=${guest.id}`) }}
         >
             <Grid container spacing={0}>
@@ -191,7 +193,19 @@ function GuestDetail({ guest }) {
     );
 }
 
-function getGuestColorCode(checkedIn, checkedOut) {
+function getGuestColorCode(guestList, idx) {
+    if (guestList === undefined || guestList === null) {
+        return '#FFFFFF';
+    }
+
+    const guest = guestList[idx];
+    if (guest === undefined || guest === null) {
+        return '#FFFFFF';
+    }
+
+    const checkedIn = guest.checkedIn;
+    const checkedOut = guest.checkedOut;
+
     if (checkedIn === true && checkedOut === false) {
         return '#FFCDD2';
     }
@@ -215,7 +229,29 @@ function getOccupancyCnt(guestList) {
     return occupiedBeds;
 }
 
-const roomCapacity = { "101": 1, "102": 1, "103": 1, "104": 8, "201": 6, "202": 6, "203": 6, "204": 8, "301": 1, "302": 1, "303": 1, "304": 1 };
+function getRoomRowSpan(prevGuestList, currentGuestList) {
+    if (prevGuestList === undefined || prevGuestList === null) {
+        prevGuestList = [];
+    }
+
+    if (currentGuestList === undefined || currentGuestList === null) {
+        currentGuestList = [];
+    }
+
+    if (prevGuestList.length === 0 && currentGuestList.length === 0) {
+        return 1;
+    }
+
+    var prevGuestCnt = prevGuestList.length;
+    var currentGuestCnt = currentGuestList.length;
+
+    if (prevGuestCnt >= currentGuestCnt) {
+        return prevGuestCnt;
+    }
+    else {
+        return currentGuestCnt;
+    }
+}
 
 
 const bookingSrcIcon = {
