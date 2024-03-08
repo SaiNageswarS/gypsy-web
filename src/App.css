@@ -1,10 +1,14 @@
+.AppBar {
+  background-color: #ffff05;
+}
+
 .BrandLogo {
   border-radius: 4px;
   padding-left: 10px;
 }
 
 .BrandName {
-  color: #235784;
+  color: 'darkgray';
   font-weight: 800;
   font-size: 20px;
 }

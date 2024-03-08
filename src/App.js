@@ -55,7 +55,10 @@ function App() {
 
     return (
       <Grid container alignItems="center" spacing={2} sx={{ minHeight: "90px" }} className="AppBar">
-        <Grid xs={6} md={9} style={{ padding: '25px' }}>
+        <Grid xs={2} md={1} style={{ padding: '20px 0 20px 0px', textAlign: 'center' }}>
+          <img src="favicon.ico" alt="Gypsy Nest Logo" />
+        </Grid>
+        <Grid xs={4} md={8}>
           <span className="BrandName" onClick={handleClickOnLogo} style={{ cursor: 'pointer' }}> Gypsy Nest </span>
         </Grid>
         <Grid xs={6} md={3}>
