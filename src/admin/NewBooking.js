@@ -7,6 +7,7 @@ import {
     TextField,
     MenuItem,
     FormControl,
+    FormControlLabel,
     InputLabel,
     Select,
     Button,
@@ -19,6 +20,7 @@ import BillsComponent from './BillsComponent';
 import { useNavigate } from 'react-router-dom';
 import { SaveBooking, GetBooking, DeleteBooking } from '../repo/BookingRepo';
 import { GetBills } from '../repo/BillsRepo';
+import { RoomCapacity } from '../repo/OccupancyRepo';
 
 function NewBooking({ loggedInUser }) {
     if (loggedInUser === null || loggedInUser === undefined || loggedInUser.isAdmin === false) {
@@ -46,6 +48,7 @@ function RoomBookingForm({ loggedInUser }) {
     const [formData, setFormData] = React.useState({
         name: '',
         roomNumber: '',
+        beds: [],
         checkInDate: '',
         checkOutDate: '',
         src: '',
@@ -88,16 +91,46 @@ function RoomBookingForm({ loggedInUser }) {
         setFormData((prevData) => ({ ...prevData, [name]: checked }));
     };
 
+    const handleBedChange = (event) => {
+        const bedNumber = parseInt(event.target.name);
+        const updatedBeds = event.target.checked
+            ? [...formData.beds, bedNumber]
+            : formData.beds.filter(bed => bed !== bedNumber);
+        setFormData({ ...formData, beds: updatedBeds });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!isSubmitting) {
             setIsSubmitting(true);
+
             SaveBooking(bookingId, formData, bills).then(() => {
                 setIsSubmitting(false);
                 navigate(-1);
             });
         }
+    };
+
+    const renderBedCheckboxes = () => {
+        const capacity = RoomCapacity[formData.roomNumber];
+        const bedCheckboxes = [];
+
+        for (let i = 1; i <= capacity; i++) {
+            bedCheckboxes.push(
+                <FormControlLabel
+                    key={i}
+                    control={
+                        <Checkbox name={i.toString()}
+                            checked={formData.beds.includes(i)}
+                            onChange={handleBedChange} />
+                    }
+                    label={`Bed ${i}`}
+                />
+            );
+        }
+
+        return bedCheckboxes;
     };
 
     return (
@@ -203,6 +236,10 @@ function RoomBookingForm({ loggedInUser }) {
                             readOnly: true,
                         }}
                     />
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    {formData.roomNumber !== '' && RoomCapacity[formData.roomNumber] > 1 &&
+                        renderBedCheckboxes()}
                 </Grid>
                 <Grid item xs={6} md={6}>
                     <Checkbox

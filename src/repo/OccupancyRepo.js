@@ -62,6 +62,7 @@ async function SaveOccupancy(booking) {
             currentOccupancy[booking.roomNumber] = [];
         }
 
+        // can't update here based on bed number since we are pushing new booking to existing bookings in occupancy.
         var bookingRef = doc(db, "booking", booking.id);
         currentOccupancy[booking.roomNumber].push(bookingRef);
 
